@@ -1,5 +1,6 @@
 package com.renaultivo.todo.utils.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -36,4 +37,24 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
+    private SQLiteDatabase dataBase = null;
+    public void CreateNewTask(Object obj) {
+        TaskItem taskItem = (TaskItem) obj;   // casting
+        ContentValues values = ContentValuesTask(taskItem);
+        dataBase.insert(taskItem.tableName, null, values);
+    }
+
+    private ContentValues ContentValuesTask(TaskItem taskItem) {
+        ContentValues values = new ContentValues();
+        values.put(taskItem.title, taskItem.getTitle());
+        values.put(taskItem.description, taskItem.getDescription());
+        values.put(String.valueOf(taskItem.checked), new Integer(String.valueOf(taskItem.getChecked())));
+        values.put(taskItem.created_on.toString(), taskItem.getCreated_on().toString());
+        return values;
+    }
+
+    private void checkTask()
+    {
+
+    }
 }
