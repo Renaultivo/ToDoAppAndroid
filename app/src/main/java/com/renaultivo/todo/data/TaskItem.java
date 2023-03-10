@@ -1,5 +1,7 @@
 package com.renaultivo.todo.data;
 
+import android.content.ContentValues;
+
 import java.util.Date;
 
 public class TaskItem {
@@ -19,10 +21,10 @@ public class TaskItem {
 
     public static final String DropTable = "DROP TABLE IF EXISTS " + tableName;
 
+
     public String title;
     public String description;
     public boolean checked;
-
     public Date created_on;
 
     public TaskItem(boolean checked, String title, String description, Date created_on) {
@@ -30,6 +32,9 @@ public class TaskItem {
         this.title = title;
         this.description = description;
         this.created_on = created_on;
+
+        //cursor.put("checked", new Integer(taskItem.getChecked()).toString())
+        
     }
 
 

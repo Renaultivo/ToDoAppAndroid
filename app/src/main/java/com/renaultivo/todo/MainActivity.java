@@ -1,6 +1,7 @@
 package com.renaultivo.todo;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -32,13 +33,32 @@ public class MainActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
-        layoutParams.setMargins(30, 10, 30, 10);
+        layoutParams.setMargins(50, 20, 50, 20);
 
         layout.setLayoutParams(layoutParams);
 
         textView.setTextColor(Color.parseColor("#DDDDDD"));
 
+        LinearLayout.LayoutParams checkBoxLayoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        checkBoxLayoutParams.setMargins(10, 10, 0, 10);
+
+        checkBox.setLayoutParams(checkBoxLayoutParams);
+
         checkBox.setChecked(taskItem.checked);
+
+        LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        textLayoutParams.setMargins(5, 10, 10, 10);
+
+        textView.setLayoutParams(textLayoutParams);
+
         textView.setText(taskItem.title);
 
         textView.setPadding(10, 10, 10, 10);
@@ -63,7 +83,7 @@ public class MainActivity extends Activity {
             taskList.add(new TaskItem(true, "Primeiro", "Primeiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Segundo", "Segundo description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Terceiro", "Terceiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
-            taskList.add(new TaskItem(true, "Quarto", "Quarto description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
+            taskList.add(new TaskItem(true, "Quarto Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description", "Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description Quarto description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Quinto", "Quinto description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Sexto", "Sexto description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Setimo", "Setimo description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
