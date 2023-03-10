@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.renaultivo.todo.data.TaskItem;
+import com.renaultivo.todo.utils.db.DB;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends Activity {
-
+    DB db;
     private LinearLayout buildTaskUI_Item(TaskItem taskItem) {
 
         LinearLayout layout = new LinearLayout(this);
@@ -80,6 +81,16 @@ public class MainActivity extends Activity {
         ArrayList<TaskItem> taskList = new ArrayList<TaskItem>();
 
         try {
+            TaskItem taskItem1 = new TaskItem(true,"teste","descricaoTeste", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02"));
+            db = new DB(this);
+            db.CreateNewTask(taskItem1);
+            TaskItem taskItem2 = new TaskItem(false,"testeEdit","descricaoTesteEdit", new SimpleDateFormat("yyyy-MM-dd").parse("2022-07-03"));
+            db.EditTask(3,taskItem2);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+            try {
             taskList.add(new TaskItem(true, "Primeiro", "Primeiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Segundo", "Segundo description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Terceiro", "Terceiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));

@@ -14,9 +14,9 @@ public class TaskItem {
     public static final String created_onColun = "created";
 
     public static final String CreateTable = "CREATE TABLE " + tableName + "("
-            + idColun + " INTEGER PRIMARY KEY," + titleColun + " TEXT,"
+            + idColun + " INTEGER PRIMARY KEY AUTOINCREMENT," + titleColun + " TEXT,"
             + descriptionColun + " TEXT," +
-            checkedColun + "BOOLEAN," +
+            checkedColun + " BOOLEAN," +
             created_onColun + " DATE" +")";
 
     public static final String DropTable = "DROP TABLE IF EXISTS " + tableName;
@@ -37,5 +37,41 @@ public class TaskItem {
         
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription()
+    {
+        this.description = description;
+    }
+
+    public boolean getChecked()
+    {
+        return checked;
+    }
+
+    public void setChecked()
+    {
+        this.checked = checked;
+    }
+
+    public Date getCreated_on()
+    {
+        return created_on;
+    }
+
+    public void setCreated_on()
+    {
+        this.created_on = created_on;
+    }
 }
