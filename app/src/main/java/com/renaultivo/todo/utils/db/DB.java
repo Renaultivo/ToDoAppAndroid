@@ -58,6 +58,15 @@ public class DB extends SQLiteOpenHelper {
         return values;
     }
 
+    public void EditTask(int id ,TaskItem taskItem)
+    {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(taskItem.titleColun, taskItem.getTitle());
+        contentValues.put(taskItem.descriptionColun, taskItem.getDescription());
+        contentValues.put(taskItem.checkedColun, taskItem.getChecked());
+        contentValues.put(taskItem.created_onColun, taskItem.getCreated_on().toString());
+        getWritableDatabase().update(TaskItem.tableName, contentValues,"idTask="+id,null);
+    }
     private void checkTask()
     {
 
