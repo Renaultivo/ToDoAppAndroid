@@ -7,14 +7,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.renaultivo.todo.data.TaskItem;
 
-public class DB extends SQLiteOpenHelper {
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+public class DB extends SQLiteOpenHelper {
+    private SQLiteDatabase dataBase = null;
     public static final String BankName =  "BankTask";
     public static final int Version =  1;
 
     private static DB instance;
 
-    private DB(Context context) {
+    public DB(Context context) {
         super(context,BankName,null,Version);
     }
 
@@ -28,6 +33,7 @@ public class DB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(TaskItem.CreateTable);
+        dataBase = sqLiteDatabase;
     }
 
     @Override
@@ -37,19 +43,18 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
-    private SQLiteDatabase dataBase = null;
-    public void CreateNewTask(Object obj) {
-        TaskItem taskItem = (TaskItem) obj;   // casting
+
+    public void CreateNewTask(TaskItem taskItem) {
         ContentValues values = ContentValuesTask(taskItem);
-        dataBase.insert(taskItem.tableName, null, values);
+        getWritableDatabase().insert(TaskItem.tableName, null, values);
     }
 
     private ContentValues ContentValuesTask(TaskItem taskItem) {
         ContentValues values = new ContentValues();
-        values.put(taskItem.title, taskItem.getTitle());
-        values.put(taskItem.description, taskItem.getDescription());
-        values.put(String.valueOf(taskItem.checked), new Integer(String.valueOf(taskItem.getChecked())));
-        values.put(taskItem.created_on.toString(), taskItem.getCreated_on().toString());
+        values.put(taskItem.titleColun, taskItem.getTitle());
+        values.put(taskItem.descriptionColun, taskItem.getDescription());
+        values.put(taskItem.checkedColun, taskItem.getChecked());
+        values.put(taskItem.created_onColun, taskItem.getCreated_on().toString());
         return values;
     }
 
@@ -57,4 +62,5 @@ public class DB extends SQLiteOpenHelper {
     {
 
     }
+
 }

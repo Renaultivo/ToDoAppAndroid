@@ -14,7 +14,7 @@ public class TaskItem {
     public static final String CreateTable = "CREATE TABLE " + tableName + "("
             + idColun + " INTEGER PRIMARY KEY AUTOINCREMENT," + titleColun + " TEXT,"
             + descriptionColun + " TEXT," +
-            checkedColun + "BOOLEAN," +
+            checkedColun + " BOOLEAN," +
             created_onColun + " DATE" +")";
 
     public static final String DropTable = "DROP TABLE IF EXISTS " + tableName;
