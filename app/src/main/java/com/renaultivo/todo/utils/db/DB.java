@@ -2,6 +2,7 @@ package com.renaultivo.todo.utils.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -10,7 +11,10 @@ import com.renaultivo.todo.data.TaskItem;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import kotlinx.coroutines.scheduling.Task;
 
 public class DB extends SQLiteOpenHelper {
     private SQLiteDatabase dataBase = null;
@@ -72,9 +76,19 @@ public class DB extends SQLiteOpenHelper {
     {
         return getWritableDatabase().delete(TaskItem.tableName, "idTask="+taskItem.id, null);
     }
-    private void CheckTask()
+    public ArrayList<String> listTask()
     {
-
+        ArrayList<String> task = new ArrayList<>();
+        Cursor cursor = dataBase.query(TaskItem.tableName, new String[]{TaskItem.titleColun,TaskItem.descriptionColun,
+                        TaskItem.checkedColun, TaskItem.created_onColun}
+                        ,null, null,null,null,null);
+        while (cursor.moveToNext()){
+            task.add(cursor.getString(0) +
+                    cursor.getString(1)+
+                    cursor.getString(2)+
+                    cursor.getString(3));
+        }
+        return task;
     }
 
 }
