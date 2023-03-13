@@ -1,6 +1,7 @@
 package com.renaultivo.todo.data;
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.Date;
 

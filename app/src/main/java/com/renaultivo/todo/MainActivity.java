@@ -2,16 +2,19 @@ package com.renaultivo.todo;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.renaultivo.todo.data.TaskItem;
 import com.renaultivo.todo.utils.db.DB;
+import com.renaultivo.todo.utils.dialog.DialogModal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,6 +80,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.actitivty_main);
 
         LinearLayout taskListLayout = findViewById(R.id.taskListLayout);
+        Button addTaskButton = findViewById(R.id.addTaskButton);
 
         ArrayList<TaskItem> taskList = new ArrayList<TaskItem>();
 
@@ -112,10 +116,25 @@ public class MainActivity extends Activity {
             throw new RuntimeException(e);
         }
 
+        DB db = new DB(this);
 
         for (TaskItem item : taskList) {
             taskListLayout.addView(buildTaskUI_Item(item));
+            //db.CreateNewTask(item);
         }
+
+        Context context = this;
+
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                new DialogModal(context).show();
+
+            }
+
+        });
 
         System.out.println(taskList);
 

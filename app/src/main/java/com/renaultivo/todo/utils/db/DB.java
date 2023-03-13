@@ -47,6 +47,7 @@ public class DB extends SQLiteOpenHelper {
     public void CreateNewTask(TaskItem taskItem) {
         ContentValues values = ContentValuesTask(taskItem);
         getWritableDatabase().insert(TaskItem.tableName, null, values);
+        System.out.println(taskItem);
     }
 
     private ContentValues ContentValuesTask(TaskItem taskItem) {
