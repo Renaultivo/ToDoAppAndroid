@@ -58,21 +58,21 @@ public class DB extends SQLiteOpenHelper {
         return values;
     }
 
-    public void EditTask(TaskItem taskItem)
+    public long EditTask(TaskItem taskItem)
     {
         ContentValues contentValues = new ContentValues();
         contentValues.put(taskItem.titleColun, taskItem.getTitle());
         contentValues.put(taskItem.descriptionColun, taskItem.getDescription());
         contentValues.put(taskItem.checkedColun, taskItem.getChecked());
         contentValues.put(taskItem.created_onColun, taskItem.getCreated_on().toString());
-        getWritableDatabase().update(TaskItem.tableName, contentValues,"idTask="+taskItem.id,null);
+        return getWritableDatabase().update(TaskItem.tableName, contentValues,"idTask="+taskItem.id,null);
     }
 
-    public void DeleteTask(TaskItem taskItem)
+    public long DeleteTask(TaskItem taskItem)
     {
-        getWritableDatabase().delete(TaskItem.tableName, "idTask="+taskItem.id, null);
+        return getWritableDatabase().delete(TaskItem.tableName, "idTask="+taskItem.id, null);
     }
-    private void checkTask()
+    private void CheckTask()
     {
 
     }
