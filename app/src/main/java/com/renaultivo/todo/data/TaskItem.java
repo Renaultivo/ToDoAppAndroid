@@ -21,7 +21,7 @@ public class TaskItem {
 
     public static final String DropTable = "DROP TABLE IF EXISTS " + tableName;
 
-
+    public int id;
     public String title;
     public String description;
     public boolean checked;
