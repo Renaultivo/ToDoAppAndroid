@@ -80,15 +80,17 @@ public class MainActivity extends Activity {
 
         ArrayList<TaskItem> taskList = new ArrayList<TaskItem>();
 
-        try {
+
+        /*try {
             TaskItem taskItem1 = new TaskItem(true,"teste","descricaoTeste", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02"));
             db = new DB(this);
             db.CreateNewTask(taskItem1);
             TaskItem taskItem2 = new TaskItem(false,"testeEdit","descricaoTesteEdit", new SimpleDateFormat("yyyy-MM-dd").parse("2022-07-03"));
-            db.EditTask(3,taskItem2);
+            db.EditTask(taskItem2);
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
             try {
             taskList.add(new TaskItem(true, "Primeiro", "Primeiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
