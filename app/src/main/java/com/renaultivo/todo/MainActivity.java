@@ -11,10 +11,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.renaultivo.todo.data.TaskItem;
 import com.renaultivo.todo.utils.db.DB;
+import com.renaultivo.todo.utils.dialog.ActionRunnable;
 import com.renaultivo.todo.utils.dialog.DialogModal;
+import com.renaultivo.todo.utils.dialog.TaskModalAction;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -82,8 +85,9 @@ public class MainActivity extends Activity {
         LinearLayout taskListLayout = findViewById(R.id.taskListLayout);
         Button addTaskButton = findViewById(R.id.addTaskButton);
 
-        ArrayList<TaskItem> taskList = new ArrayList<TaskItem>();
+        DB db = new DB(this);
 
+        ArrayList<TaskItem> taskList = db.listTask();
 
         /*try {
             TaskItem taskItem1 = new TaskItem(true,"teste","descricaoTeste", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02"));
@@ -96,7 +100,7 @@ public class MainActivity extends Activity {
             throw new RuntimeException(e);
         }*/
 
-            try {
+        /*try {
             taskList.add(new TaskItem(true, "Primeiro", "Primeiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Segundo", "Segundo description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
             taskList.add(new TaskItem(true, "Terceiro", "Terceiro description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
@@ -114,9 +118,7 @@ public class MainActivity extends Activity {
             taskList.add(new TaskItem(true, "Decimo-Quinto", "Decimo-Quinto description", new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-02")));
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        }
-
-        DB db = new DB(this);
+        }*/
 
         for (TaskItem item : taskList) {
             taskListLayout.addView(buildTaskUI_Item(item));
@@ -125,12 +127,45 @@ public class MainActivity extends Activity {
 
         Context context = this;
 
+        TaskModalAction taskModalAction = new TaskModalAction(
+                new ActionRunnable() {
+                    @Override
+                    public void setTaskItem(TaskItem item) {
+                        this.taskItem = item;
+                    }
+
+                    @Override
+                    public void run() {
+                        db.createNewTask(this.taskItem);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Task created!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                },
+                new ActionRunnable() {
+
+                    @Override
+                    public void setTaskItem(TaskItem item) {
+                        this.taskItem = item;
+                    }
+
+                    @Override
+                    public void run() {
+
+                    }
+
+                }
+        );
+
         addTaskButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                new DialogModal(context).show();
+                new DialogModal(context, taskModalAction).show();
 
             }
 

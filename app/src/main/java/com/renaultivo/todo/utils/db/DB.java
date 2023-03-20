@@ -8,13 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.renaultivo.todo.data.TaskItem;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import kotlinx.coroutines.scheduling.Task;
 
 public class DB extends SQLiteOpenHelper {
     private SQLiteDatabase dataBase = null;
@@ -25,6 +22,7 @@ public class DB extends SQLiteOpenHelper {
 
     public DB(Context context) {
         super(context,BankName,null,Version);
+        dataBase = getWritableDatabase();
     }
 
     public static DB getInstance(Context context) {
@@ -48,22 +46,22 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-    public void CreateNewTask(TaskItem taskItem) {
-        ContentValues values = ContentValuesTask(taskItem);
+    public void createNewTask(TaskItem taskItem) {
+        ContentValues values = this.contentValuesTask(taskItem);
         getWritableDatabase().insert(TaskItem.tableName, null, values);
         System.out.println(taskItem);
     }
 
-    private ContentValues ContentValuesTask(TaskItem taskItem) {
+    private ContentValues contentValuesTask(TaskItem taskItem) {
         ContentValues values = new ContentValues();
         values.put(taskItem.titleColun, taskItem.getTitle());
         values.put(taskItem.descriptionColun, taskItem.getDescription());
         values.put(taskItem.checkedColun, taskItem.getChecked());
-        values.put(taskItem.created_onColun, taskItem.getCreated_on().toString());
+        values.put(taskItem.created_onColun, new Long(taskItem.getCreated_on().getTime()).toString());
         return values;
     }
 
-    public long EditTask(TaskItem taskItem)
+    public long editTask(TaskItem taskItem)
     {
         ContentValues contentValues = new ContentValues();
         contentValues.put(taskItem.titleColun, taskItem.getTitle());
@@ -73,23 +71,50 @@ public class DB extends SQLiteOpenHelper {
         return getWritableDatabase().update(TaskItem.tableName, contentValues,"idTask="+taskItem.id,null);
     }
 
-    public long DeleteTask(TaskItem taskItem)
+    public long deleteTask(TaskItem taskItem)
     {
         return getWritableDatabase().delete(TaskItem.tableName, "idTask="+taskItem.id, null);
     }
-    public ArrayList<String> listTask()
+    public ArrayList<TaskItem> listTask()
     {
-        ArrayList<String> task = new ArrayList<>();
+        ArrayList<TaskItem> taskList = new ArrayList<>();
+
         Cursor cursor = dataBase.query(TaskItem.tableName, new String[]{TaskItem.titleColun,TaskItem.descriptionColun,
                         TaskItem.checkedColun, TaskItem.created_onColun}
                         ,null, null,null,null,null);
+
         while (cursor.moveToNext()){
-            task.add(cursor.getString(0) +
-                    cursor.getString(1)+
-                    cursor.getString(2)+
-                    cursor.getString(3));
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                TaskItem taskItem = null;
+
+                taskItem = new TaskItem(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColun)) == '1',
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColun)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColun)),
+                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow(TaskItem.created_onColun)))
+                );
+
+                taskList.add(taskItem);
+
+            } else {
+
+                TaskItem taskItem = new TaskItem(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColun)) == '1',
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColun)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColun)),
+                        new Date(Date.parse(cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.created_onColun))))
+                );
+
+                taskList.add(taskItem);
+
+            }
+
+
         }
-        return task;
+
+        return taskList;
     }
 
 }
