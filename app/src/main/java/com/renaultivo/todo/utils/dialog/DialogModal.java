@@ -21,6 +21,7 @@ public class DialogModal extends Dialog {
         setContentView(R.layout.dialog_add_task);
 
         Button saveButton = findViewById(R.id.saveButton);
+        Button cancelButton = findViewById(R.id.cancelButton);
 
         EditText title = findViewById(R.id.title);
         EditText description = findViewById(R.id.description);
@@ -37,6 +38,17 @@ public class DialogModal extends Dialog {
                         new Date()
                 ));
 
+                cancel();
+
+            }
+
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                cancel();
             }
 
         });

@@ -137,6 +137,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         db.createNewTask(this.taskItem);
+                        taskListLayout.addView(buildTaskUI_Item(this.taskItem));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
