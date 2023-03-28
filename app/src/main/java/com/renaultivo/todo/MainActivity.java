@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +17,9 @@ import android.widget.Toast;
 import com.renaultivo.todo.data.TaskItem;
 import com.renaultivo.todo.utils.db.DB;
 import com.renaultivo.todo.utils.dialog.ActionRunnable;
+import com.renaultivo.todo.utils.dialog.DeleteTaskModal;
 import com.renaultivo.todo.utils.dialog.DialogModal;
+import com.renaultivo.todo.utils.dialog.EditTaskModal;
 import com.renaultivo.todo.utils.dialog.TaskModalAction;
 
 import java.text.ParseException;
@@ -25,7 +28,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends Activity {
+
     DB db;
+
     private LinearLayout buildTaskUI_Item(TaskItem taskItem) {
 
         LinearLayout layout = new LinearLayout(this);
@@ -33,7 +38,7 @@ public class MainActivity extends Activity {
         TextView textView = new TextView(this);
 
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setBackgroundColor(Color.parseColor("#222222"));
+        layout.setBackgroundResource(R.drawable.task_item_background);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -57,6 +62,8 @@ public class MainActivity extends Activity {
 
         checkBox.setChecked(taskItem.checked);
 
+        checkBox.setChecked(taskItem.checked);
+
         LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -73,6 +80,100 @@ public class MainActivity extends Activity {
         layout.addView(checkBox);
         layout.addView(textView);
 
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                taskItem.checked = isChecked;
+
+                db.editTask(taskItem);
+
+            }
+
+        });
+
+        Context context = this;
+
+        layout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                new EditTaskModal(context, taskItem, new TaskModalAction(
+                        new ActionRunnable() {
+                            @Override
+                            public void setTaskItem(TaskItem item) {
+                                this.taskItem = item;
+                            }
+
+                            @Override
+                            public void run() {
+
+                                db.editTask(this.taskItem);
+                                textView.setText(this.taskItem.title);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, "Task updated!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            }
+                        },
+                        new ActionRunnable() {
+
+                            @Override
+                            public void setTaskItem(TaskItem item) {
+                                this.taskItem = item;
+                            }
+
+                            @Override
+                            public void run() {
+
+                            }
+
+                        }
+                )).show();
+
+            }
+
+        });
+
+        layout.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+
+                new DeleteTaskModal(context, new TaskModalAction(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        db.deleteTask(taskItem);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                LinearLayout parent = (LinearLayout) layout.getParent();
+                                parent.removeView(layout);
+
+                                Toast.makeText(context, "Task \"" + taskItem.title + "\" was deleted", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+
+                    }
+
+                })).show();
+
+                return false;
+
+            }
+        });
+
         return layout;
 
     }
@@ -85,7 +186,7 @@ public class MainActivity extends Activity {
         LinearLayout taskListLayout = findViewById(R.id.taskListLayout);
         Button addTaskButton = findViewById(R.id.addTaskButton);
 
-        DB db = new DB(this);
+        db = new DB(this);
 
         ArrayList<TaskItem> taskList = db.listTask();
 
@@ -121,6 +222,12 @@ public class MainActivity extends Activity {
         }*/
 
         for (TaskItem item : taskList) {
+            System.out.println("---------------- START ITEM ------------------");
+            System.out.println("ID:" + item.id);
+            System.out.println("checked:" + item.checked);
+            System.out.println("title:" + item.title);
+            System.out.println("description:" + item.description);
+            System.out.println("----------------- END ITEM -----------------");
             taskListLayout.addView(buildTaskUI_Item(item));
             //db.CreateNewTask(item);
         }
@@ -136,7 +243,7 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void run() {
-                        db.createNewTask(this.taskItem);
+                        this.taskItem = db.createNewTask(this.taskItem);
                         taskListLayout.addView(buildTaskUI_Item(this.taskItem));
                         runOnUiThread(new Runnable() {
                             @Override

@@ -9,6 +9,7 @@ public class TaskModalAction implements Runnable {
     public static final int DELETE = 2;
 
     private ActionRunnable onSave;
+    private Runnable onDelete;
     private ActionRunnable onCancel;
 
     public TaskModalAction(ActionRunnable onSave, ActionRunnable onCancel) {
@@ -16,6 +17,30 @@ public class TaskModalAction implements Runnable {
         this.onSave = onSave;
         this.onCancel = onCancel;
 
+    }
+    public TaskModalAction(Runnable onDelete) {
+
+        this.onDelete = onDelete;
+
+        this.onCancel = new ActionRunnable() {
+
+            @Override
+            public void setTaskItem(TaskItem item) {
+
+            }
+
+            @Override
+            public void run() {
+
+            }
+
+        };
+
+    }
+
+
+    public void delete() {
+        this.onDelete.run();
     }
 
     public void save(TaskItem taskItem) {

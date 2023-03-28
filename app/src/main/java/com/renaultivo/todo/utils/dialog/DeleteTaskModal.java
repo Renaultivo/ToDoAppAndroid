@@ -16,12 +16,12 @@ import com.renaultivo.todo.data.TaskItem;
 
 import java.util.Date;
 
-public class DialogModal extends Dialog {
+public class DeleteTaskModal extends Dialog {
 
 
-    public DialogModal(@NonNull Context context, TaskModalAction actions) {
+    public DeleteTaskModal(@NonNull Context context, TaskModalAction actions) {
         super(context);
-        setContentView(R.layout.dialog_add_task);
+        setContentView(R.layout.delete_task_modal);
 
         getWindow().setBackgroundDrawable(
                 new ColorDrawable(
@@ -36,23 +36,12 @@ public class DialogModal extends Dialog {
         Button saveButton = findViewById(R.id.saveButton);
         Button cancelButton = findViewById(R.id.cancelButton);
 
-        EditText title = findViewById(R.id.title);
-        EditText description = findViewById(R.id.description);
-
         saveButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                actions.save(new TaskItem(
-                        0,
-                        false,
-                        title.getText().toString(),
-                        description.getText().toString(),
-                        new Date()
-                ));
-
-
+                actions.delete();
                 cancel();
 
             }

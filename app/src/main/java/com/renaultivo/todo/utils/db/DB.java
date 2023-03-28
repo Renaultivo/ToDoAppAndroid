@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.renaultivo.todo.data.TaskItem;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,7 +32,7 @@ public class DB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(TaskItem.CreateTable);
+        sqLiteDatabase.execSQL(TaskItem.createTable);
         dataBase = sqLiteDatabase;
     }
 
@@ -46,28 +44,33 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-    public void createNewTask(TaskItem taskItem) {
+    public TaskItem createNewTask(TaskItem taskItem) {
         ContentValues values = this.contentValuesTask(taskItem);
-        getWritableDatabase().insert(TaskItem.tableName, null, values);
-        System.out.println(taskItem);
+        taskItem.id = (int) getWritableDatabase().insert(TaskItem.tableName, null, values);
+
+        return taskItem;
+
     }
 
     private ContentValues contentValuesTask(TaskItem taskItem) {
         ContentValues values = new ContentValues();
-        values.put(taskItem.titleColun, taskItem.getTitle());
-        values.put(taskItem.descriptionColun, taskItem.getDescription());
-        values.put(taskItem.checkedColun, taskItem.getChecked());
-        values.put(taskItem.created_onColun, new Long(taskItem.getCreated_on().getTime()).toString());
+        values.put(taskItem.titleColumn, taskItem.getTitle());
+        values.put(taskItem.descriptionColumn, taskItem.getDescription());
+        values.put(taskItem.checkedColumn, taskItem.getChecked());
+        values.put(taskItem.created_onColumn, new Long(taskItem.getCreated_on().getTime()).toString());
         return values;
     }
 
     public long editTask(TaskItem taskItem)
     {
+
+        System.out.println("Updating task of id = " + taskItem.id);
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put(taskItem.titleColun, taskItem.getTitle());
-        contentValues.put(taskItem.descriptionColun, taskItem.getDescription());
-        contentValues.put(taskItem.checkedColun, taskItem.getChecked());
-        contentValues.put(taskItem.created_onColun, taskItem.getCreated_on().toString());
+        contentValues.put(taskItem.titleColumn, taskItem.getTitle());
+        contentValues.put(taskItem.descriptionColumn, taskItem.getDescription());
+        contentValues.put(taskItem.checkedColumn, taskItem.getChecked());
+        contentValues.put(taskItem.created_onColumn, taskItem.getCreated_on().toString());
         return getWritableDatabase().update(TaskItem.tableName, contentValues,"idTask="+taskItem.id,null);
     }
 
@@ -79,9 +82,12 @@ public class DB extends SQLiteOpenHelper {
     {
         ArrayList<TaskItem> taskList = new ArrayList<>();
 
-        Cursor cursor = dataBase.query(TaskItem.tableName, new String[]{TaskItem.titleColun,TaskItem.descriptionColun,
-                        TaskItem.checkedColun, TaskItem.created_onColun}
-                        ,null, null,null,null,null);
+        Cursor cursor = dataBase.query(TaskItem.tableName, new String[]{
+                        TaskItem.idColumn,
+                        TaskItem.titleColumn,TaskItem.descriptionColumn,
+                        TaskItem.checkedColumn, TaskItem.created_onColumn
+                },
+                null, null,null,null,null);
 
         while (cursor.moveToNext()){
 
@@ -90,10 +96,11 @@ public class DB extends SQLiteOpenHelper {
                 TaskItem taskItem = null;
 
                 taskItem = new TaskItem(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColun)) == '1',
-                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColun)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColun)),
-                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow(TaskItem.created_onColun)))
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.idColumn)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColumn)) == 1,
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColumn)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColumn)),
+                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow(TaskItem.created_onColumn)))
                 );
 
                 taskList.add(taskItem);
@@ -101,10 +108,11 @@ public class DB extends SQLiteOpenHelper {
             } else {
 
                 TaskItem taskItem = new TaskItem(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColun)) == '1',
-                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColun)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColun)),
-                        new Date(Date.parse(cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.created_onColun))))
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.idColumn)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(TaskItem.checkedColumn)) == 1,
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.titleColumn)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.descriptionColumn)),
+                        new Date(Date.parse(cursor.getString(cursor.getColumnIndexOrThrow(TaskItem.created_onColumn))))
                 );
 
                 taskList.add(taskItem);
